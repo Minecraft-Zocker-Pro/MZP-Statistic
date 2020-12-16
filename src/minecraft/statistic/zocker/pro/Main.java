@@ -17,6 +17,7 @@ public class Main extends CorePlugin {
 
 	public static Config STATISTIC_CONFIG, STATISTIC_MESSAGE, STATISTIC_MENU_OVERVIEW, STATISTIC_MENU_LEADERBOARD_OVERVIEW, STATISTIC_MENU_LEADERBOARD_TOP;
 	public static String STATISTIC_DATABASE_TABLE;
+	private static boolean hasVaultSupport;
 	private static CorePlugin PLUGIN;
 	private static Economy ECONOMY;
 
@@ -34,10 +35,8 @@ public class Main extends CorePlugin {
 			return;
 		}
 
-		if (!setupEconomy()) {
-			System.out.println("Disabled due to no Vault dependency found!");
-			getServer().getPluginManager().disablePlugin(this);
-			return;
+		if (setupEconomy()) {
+			System.out.println("Hooked into Vault!");
 		}
 
 		this.buildConfig();
@@ -446,15 +445,18 @@ public class Main extends CorePlugin {
 
 	private boolean setupEconomy() {
 		if (getServer().getPluginManager().getPlugin("Vault") == null) {
+			hasVaultSupport = false;
 			return false;
 		}
 
 		RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
 		if (rsp == null) {
+			hasVaultSupport = false;
 			return false;
 		}
 
 		ECONOMY = rsp.getProvider();
+		hasVaultSupport = true;
 		return true;
 	}
 
@@ -464,5 +466,9 @@ public class Main extends CorePlugin {
 
 	public static Economy getEconomy() {
 		return ECONOMY;
+	}
+
+	public static boolean hasVaultSupport() {
+		return hasVaultSupport;
 	}
 }

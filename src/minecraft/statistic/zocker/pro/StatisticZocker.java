@@ -44,11 +44,14 @@ public class StatisticZocker extends Zocker {
 
 				if (statisticMoneyAddEvent.isCancelled()) return;
 
-				Main.getEconomy().depositPlayer(getPlayer(), money);
+				if (Main.hasVaultSupport()) {
+					Main.getEconomy().depositPlayer(getPlayer(), money);
 
-				if (Main.STATISTIC_CONFIG.getBool(configPath + ".actionbar.enabled")) {
-					CompatibleMessage.sendActionBar(getPlayer(), Main.STATISTIC_MESSAGE.getString("statistic.reward.money.actionbar.add").replace("%money%", String.valueOf(Util.formatDouble(money))));
+					if (Main.STATISTIC_CONFIG.getBool(configPath + ".actionbar.enabled")) {
+						CompatibleMessage.sendActionBar(getPlayer(), Main.STATISTIC_MESSAGE.getString("statistic.reward.money.actionbar.add").replace("%money%", String.valueOf(Util.formatDouble(money))));
+					}
 				}
+
 			}
 		}.runTaskAsynchronously(Main.getPlugin());
 	}
@@ -60,10 +63,13 @@ public class StatisticZocker extends Zocker {
 			@Override
 			public void run() {
 				double money = Util.getRandomNumberBetween(min, max);
-				Main.getEconomy().withdrawPlayer(getPlayer(), money);
 
-				if (Main.STATISTIC_CONFIG.getBool(configPath + ".actionbar.enabled")) {
-					CompatibleMessage.sendActionBar(getPlayer(), Main.STATISTIC_MESSAGE.getString("statistic.reward.money.actionbar.remove").replace("%money%", String.valueOf(Util.formatDouble(money))));
+				if (Main.hasVaultSupport()) {
+					Main.getEconomy().withdrawPlayer(getPlayer(), money);
+
+					if (Main.STATISTIC_CONFIG.getBool(configPath + ".actionbar.enabled")) {
+						CompatibleMessage.sendActionBar(getPlayer(), Main.STATISTIC_MESSAGE.getString("statistic.reward.money.actionbar.remove").replace("%money%", String.valueOf(Util.formatDouble(money))));
+					}
 				}
 			}
 		}.runTaskAsynchronously(Main.getPlugin());

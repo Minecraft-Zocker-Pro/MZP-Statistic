@@ -59,7 +59,6 @@ public class StatisticSetCommand extends SubCommand {
 				return;
 			}
 
-			StatisticType type = StatisticType.valueOf(typeString.toUpperCase());
 			Player target = Bukkit.getPlayer(targetName);
 
 			if (target == null) {
@@ -70,7 +69,7 @@ public class StatisticSetCommand extends SubCommand {
 				}
 
 				StatisticZocker statisticZocker = new StatisticZocker(uuid);
-				statisticZocker.set(type, amountString);
+				statisticZocker.set(typeString.toUpperCase(), amountString);
 				sendAddedMessage(sender, Main.STATISTIC_MESSAGE.getString("statistic.command.statistic.set")
 					.replace("%type%", typeString)
 					.replace("%target%", targetName)
@@ -79,7 +78,7 @@ public class StatisticSetCommand extends SubCommand {
 			}
 
 			StatisticZocker statisticZocker = new StatisticZocker(target.getUniqueId());
-			statisticZocker.set(type, amountString);
+			statisticZocker.set(typeString.toUpperCase(), amountString);
 			sendAddedMessage(sender, Main.STATISTIC_MESSAGE.getString("statistic.command.statistic.set")
 				.replace("%type%", typeString)
 				.replace("%target%", targetName)

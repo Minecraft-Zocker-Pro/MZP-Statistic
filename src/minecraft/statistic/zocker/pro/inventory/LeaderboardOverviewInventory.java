@@ -7,6 +7,7 @@ import minecraft.core.zocker.pro.config.Config;
 import minecraft.core.zocker.pro.inventory.InventoryZocker;
 import minecraft.core.zocker.pro.inventory.builder.InventoryEntryBuilder;
 import minecraft.core.zocker.pro.inventory.util.ItemBuilder;
+import minecraft.statistic.zocker.pro.StatisticManager;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -71,10 +72,10 @@ public class LeaderboardOverviewInventory extends InventoryZocker {
 				amount = 1;
 			}
 
-			StatisticType type = StatisticType.valueOf(itemKeySection.getString("type"));
+			String type = itemKeySection.getString("type");
 			if (type == null) return;
 
-			String typeName = type.getName();
+			String typeName = StatisticManager.getName(type);
 
 			CompatibleMaterial compatibleMaterial = CompatibleMaterial.getMaterial(itemKeySection.getString("material.type"));
 			if (compatibleMaterial == null) {
@@ -98,7 +99,7 @@ public class LeaderboardOverviewInventory extends InventoryZocker {
 						.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_PLACED_ON, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_DESTROYS, ItemFlag.HIDE_ATTRIBUTES))
 					.setSlot(itemKeySection.getInt("position"))
 					.onAllClicks(inventoryClickEvent -> {
-						clickHandler(StatisticType.valueOf(itemKeySection.getString("type")), zocker);
+						clickHandler(itemKeySection.getString("type"), zocker);
 					})
 					.setAsync(true)
 					.build());
@@ -110,7 +111,7 @@ public class LeaderboardOverviewInventory extends InventoryZocker {
 						.addItemFlags(ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_PLACED_ON, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_DESTROYS, ItemFlag.HIDE_ATTRIBUTES))
 					.setSlot(itemKeySection.getInt("position"))
 					.onAllClicks(inventoryClickEvent -> {
-						clickHandler(StatisticType.valueOf(itemKeySection.getString("type")), zocker);
+						clickHandler(itemKeySection.getString("type"), zocker);
 					})
 					.setAsync(true)
 					.build());
@@ -118,7 +119,7 @@ public class LeaderboardOverviewInventory extends InventoryZocker {
 		});
 	}
 
-	private void clickHandler(StatisticType type, Zocker zocker) {
+	private void clickHandler(String type, Zocker zocker) {
 		if (type == null) return;
 		new LeaderboardTopInventory(zocker, type).open(zocker);
 	}

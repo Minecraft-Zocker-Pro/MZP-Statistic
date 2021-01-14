@@ -30,8 +30,11 @@ public class StatisticZocker extends Zocker {
 		super(dummy);
 	}
 
-	// TODO type for custom reward events
 	public void addMoney(StatisticType type, double min, double max, String configPath) {
+		this.addMoney(type.toString(), min, max, configPath);
+	}
+
+	public void addMoney(String type, double min, double max, String configPath) {
 		if (min == 0 || max == 0 || configPath == null) return;
 
 		new BukkitRunnable() {
@@ -57,6 +60,10 @@ public class StatisticZocker extends Zocker {
 	}
 
 	public void removeMoney(StatisticType type, double min, double max, String configPath) {
+		this.removeMoney(type.toString(), min, max, configPath);
+	}
+
+	public void removeMoney(String type, double min, double max, String configPath) {
 		if (min == 0 || max == 0 || configPath == null) return;
 
 		new BukkitRunnable() {
@@ -75,7 +82,12 @@ public class StatisticZocker extends Zocker {
 		}.runTaskAsynchronously(Main.getPlugin());
 	}
 
+
 	public void addXp(StatisticType type, double min, double max, String configPath) {
+		this.addXp(type.toString(), min, max, configPath);
+	}
+
+	public void addXp(String type, double min, double max, String configPath) {
 		if (min == 0 || max == 0 || configPath == null) return;
 
 		int exp = Util.getRandomNumberBetween((int) min, (int) max);
@@ -87,6 +99,10 @@ public class StatisticZocker extends Zocker {
 	}
 
 	public void removeXp(StatisticType type, double min, double max, String configPath) {
+		this.removeXp(type.toString(), min, max, configPath);
+	}
+
+	public void removeXp(String type, double min, double max, String configPath) {
 		if (min == 0 || max == 0 || configPath == null) return;
 
 		int expRemove = Util.getRandomNumberBetween((int) min, (int) max);
@@ -101,29 +117,44 @@ public class StatisticZocker extends Zocker {
 	}
 
 	public void add(StatisticType type) {
-		this.add(type, 1);
+		this.add(type.toString(), 1);
 	}
 
 	public void add(StatisticType type, int amount) {
+		this.add(type.toString(), amount);
+	}
+
+	public void add(String type) {
+		this.add(type, 1);
+	}
+
+	public void add(String type, int amount) {
 		if (amount == 0) return;
 
-		this.get(type).thenAcceptAsync(valueString -> {
+		this.get(type).thenAcceptAsync(statistic -> {
 			try {
-				if (valueString == null) return;
-				int value = Integer.valueOf(valueString);
+				if (statistic == null) {
+					insert(type, String.valueOf(amount));
+					Bukkit.getPluginManager().callEvent(new StatisticAddEvent(getPlayer(), type, true));
+
+					insert(type + "_TOTAL", String.valueOf(amount));
+					Bukkit.getPluginManager().callEvent(new StatisticAddEvent(getPlayer(), type + "_TOTAL", true));
+					return;
+				}
+
+				int value = Integer.parseInt(statistic.getValue());
 
 				this.set(type, String.valueOf((value + amount)));
+				Bukkit.getPluginManager().callEvent(new StatisticAddEvent(getPlayer(), type, true));
 
-				StatisticType typeTotal = StatisticType.valueOf(type.name() + "_TOTAL");
-				String valueTopString = this.get(typeTotal).get();
+				String valueTopString = this.get(type + "_TOTAL").get().getValue();
 
 				if (valueTopString == null) return;
 
-				int valueTop = Integer.valueOf(valueTopString);
+				int valueTop = Integer.parseInt(valueTopString);
 
-				this.set(typeTotal, String.valueOf((valueTop + amount)));
-
-				Bukkit.getPluginManager().callEvent(new StatisticAddEvent(getPlayer(), type, true));
+				this.set(type + "_TOTAL", String.valueOf((valueTop + amount)));
+				Bukkit.getPluginManager().callEvent(new StatisticAddEvent(getPlayer(), type + "_TOTAL", true));
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
 			}
@@ -131,52 +162,132 @@ public class StatisticZocker extends Zocker {
 	}
 
 	public void remove(StatisticType type) {
-		this.remove(type, 1);
+		this.remove(type.toString(), 1);
 	}
 
 	public void remove(StatisticType type, int amount) {
-		if (amount == 0) return;
+		this.remove(type.toString(), amount);
+	}
 
-		this.get(type).thenAcceptAsync(valueString -> {
-			if (valueString == null) return;
-			int value = Integer.valueOf(valueString);
+	public CompletableFuture<Boolean> remove(String type, int amount) {
+		if (amount == 0) return null;
+
+		this.get(type).thenApplyAsync(statistic -> {
+			if (statistic == null) return null;
+			int value = Integer.parseInt(statistic.getValue());
 			if (value >= amount) {
 				Bukkit.getPluginManager().callEvent(new StatisticRemoveEvent(getPlayer(), type, true));
-				this.set(type, String.valueOf((value - amount)));
+				return this.set(type, String.valueOf((value - amount)));
 			} else {
 				Bukkit.getPluginManager().callEvent(new StatisticRemoveEvent(getPlayer(), type, true));
-				this.set(type, "0");
+				return this.set(type, "0");
 			}
+		});
+
+		return null;
+	}
+
+	public CompletableFuture<Boolean> reset(StatisticType type) {
+		return this.set(type.toString(), "0");
+	}
+
+	public CompletableFuture<Boolean> reset(String type) {
+		Bukkit.getPluginManager().callEvent(new StatisticResetEvent(getPlayer(), type, false));
+		return this.set(type, "0");
+	}
+
+	public CompletableFuture<Statistic> get(StatisticType type) {
+		return this.get(type.toString());
+	}
+
+	public CompletableFuture<Statistic> get(String type) {
+		return this.get(Main.STATISTIC_DATABASE_TABLE, new String[]{"statistic_value"}, new String[]{"player_uuid", "statistic_type"}, new Object[]{this.getUUIDString(), type}).thenApply(stringStringMap -> {
+			if (stringStringMap == null) return null;
+			return new Statistic(this.getUUIDString(), type, stringStringMap.get("statistic_value"));
 		});
 	}
 
-	public void reset(StatisticType type) {
-		Bukkit.getPluginManager().callEvent(new StatisticResetEvent(getPlayer(), type, false));
-		this.set(type, "0");
-	}
-
-	public CompletableFuture<String> get(StatisticType type) {
-		return this.get(Main.STATISTIC_DATABASE_TABLE, type.name().toLowerCase(), "player_uuid", this.getUUIDString());
-	}
-
 	public CompletableFuture<Integer> getPlacement(StatisticType type) {
-		return this.getPlacement(Main.STATISTIC_DATABASE_TABLE, type.name().toLowerCase(), "player_uuid", this.getUUIDString());
+		return this.getPlacement(type.toString());
+	}
+
+	public CompletableFuture<Integer> getPlacement(String type) {
+		return this.get(type.toUpperCase()).thenApplyAsync(statistic -> {
+			if (statistic == null) return 0;
+			if (statistic.getValue().equalsIgnoreCase("-1")) return 0;
+			
+			try {
+				return this.getPlacement(
+					Main.STATISTIC_DATABASE_TABLE,
+					"statistic_value",
+					"player_uuid",
+					this.getUUIDString(),
+					"statistic_type",
+					type.toUpperCase())
+					.get();
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
+
+			return 0;
+		});
 	}
 
 	public CompletableFuture<Boolean> set(StatisticType type, String value) {
-		return this.set(Main.STATISTIC_DATABASE_TABLE, type.name().toLowerCase(), value, "player_uuid", this.getUUIDString());
+		return this.set(type.toString(), value);
+	}
+
+	public CompletableFuture<Boolean> set(String type, String value) {
+		return this.get(type).thenApplyAsync(statistic -> {
+			if (statistic == null) {
+				try {
+					return this.insert(type, value).get();
+				} catch (InterruptedException | ExecutionException e) {
+					e.printStackTrace();
+				}
+			}
+
+			try {
+				return this.set(Main.STATISTIC_DATABASE_TABLE,
+					new String[]{"statistic_value"},
+					new Object[]{value},
+					new String[]{"player_uuid", "statistic_type"},
+					new Object[]{this.getUUIDString(), type}).get();
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
+
+			return null;
+		});
+	}
+
+	private CompletableFuture<Boolean> insert(String type, String value) {
+		return this.insert(Main.STATISTIC_DATABASE_TABLE,
+			new String[]{"player_uuid", "statistic_type", "statistic_value"},
+			new Object[]{this.getUUIDString(), type, value},
+			new String[]{"player_uuid", "statistic_type"},
+			new Object[]{this.getUUIDString(), type},
+			this.getUUIDString());
 	}
 
 	public CompletableFuture<String> getKD() {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
-				String killTotalString = get(StatisticType.KILL_TOTAL).get();
-				if (killTotalString == null) return null;
+				Statistic statisticKill = get(StatisticType.KILL_TOTAL.toString()).get();
+				if (statisticKill == null) return "0";
 
-				String deathTotalString = get(StatisticType.DEATH_TOTAL).get();
-				if (deathTotalString == null) return null;
+				String killTotalString = statisticKill.getValue();
+				if (killTotalString == null) return "0";
 
-				return String.valueOf(Util.formatDouble(Double.valueOf(killTotalString) / Double.valueOf(deathTotalString)));
+				Statistic statisticDeath = get(StatisticType.DEATH_TOTAL.toString()).get();
+				if (statisticDeath == null) return "0";
+
+				String deathTotalString = statisticDeath.getValue();
+				if (deathTotalString == null) return "0";
+
+				if (killTotalString.equalsIgnoreCase("0") && deathTotalString.equalsIgnoreCase("0")) return "0";
+
+				return String.valueOf(Util.formatDouble(Double.parseDouble(killTotalString) / Double.parseDouble(deathTotalString)));
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
 			}

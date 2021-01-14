@@ -54,17 +54,9 @@ public enum StatisticType {
 	VOID_FALL,
 	VOID_FALL_TOTAL;
 
-
-	public String getName() {
-		String name = this.name();
-		name = name.replace("_", " ");
-		name = name.toLowerCase();
-		name = name.substring(0, 1).toUpperCase() + name.substring(1);
-
-		return name;
-	}
-
-	public String getNamePlural() {
-		return this.getName() + "s";
+	static {
+		for (StatisticType type : StatisticType.values()) {
+			StatisticManager.register(type.name());
+		}
 	}
 }

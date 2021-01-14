@@ -1,6 +1,5 @@
 package minecraft.statistic.zocker.pro.event;
 
-import minecraft.statistic.zocker.pro.StatisticType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -10,12 +9,12 @@ public class StatisticMoneyAddEvent extends Event implements Cancellable {
 	private static final HandlerList HANDLER_LIST = new HandlerList();
 
 	private final Player player;
-	private final StatisticType statisticType;
+	private final String statisticType;
 	private final String configPath;
 	private final double amount;
 	private boolean cancelled;
 
-	public StatisticMoneyAddEvent(Player player, StatisticType type, String configPath, double amount) {
+	public StatisticMoneyAddEvent(Player player, String type, String configPath, double amount) {
 		super(true);
 		this.player = player;
 		this.statisticType = type;
@@ -27,7 +26,7 @@ public class StatisticMoneyAddEvent extends Event implements Cancellable {
 		return player;
 	}
 
-	public StatisticType getStatisticType() {
+	public String getStatisticType() {
 		return statisticType;
 	}
 

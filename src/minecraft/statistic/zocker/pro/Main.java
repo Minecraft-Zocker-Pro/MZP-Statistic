@@ -47,6 +47,8 @@ public class Main extends CorePlugin {
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			setupPlaceholder();
 		}
+
+		System.out.println(StatisticManager.getStatisticTypes().size() + " Statistics registered");
 	}
 
 	@Override
@@ -113,7 +115,6 @@ public class Main extends CorePlugin {
 
 		pluginManager.registerEvents(new PlayerVoidFallListener(), this);
 		pluginManager.registerEvents(new PlayerQuitListener(), this);
-		pluginManager.registerEvents(new ZockerDataInitializeListener(), this);
 	}
 
 	@Override
@@ -423,20 +424,22 @@ public class Main extends CorePlugin {
 			STATISTIC_DATABASE_TABLE = "player_statistic_" + StorageManager.getServerName();
 		}
 
-		String statisticTable = "CREATE TABLE IF NOT EXISTS `" + STATISTIC_DATABASE_TABLE + "`( `player_uuid` VARCHAR(36) NOT NULL, `kill` INT DEFAULT 0, `kill_total` INT DEFAULT 0, `death` INT DEFAULT 0, `death_total` INT DEFAULT 0, `streak` INT DEFAULT 0, `streak_total` INT DEFAULT 0, `streak_top` INT DEFAULT 0, `hostile_kill` INT DEFAULT 0, `hostile_kill_total` INT DEFAULT 0, " +
-			"`friendly_kill` INT DEFAULT 0, " +
-			"`friendly_kill_total` INT DEFAULT 0, `milk` INT DEFAULT 0, `milk_total` INT DEFAULT 0, `tame` INT DEFAULT 0, `tame_total` INT DEFAULT 0, `shear` INT DEFAULT 0, `shear_total` INT DEFAULT 0, `throw` INT DEFAULT 0, `throw_total` INT DEFAULT 0, `fish` INT DEFAULT 0, `fish_total` INT DEFAULT 0, `block_break` INT DEFAULT 0, `block_break_total` INT DEFAULT 0, `block_place` INT DEFAULT 0, `block_place_total` INT DEFAULT 0, `item_break` " +
-			"INT DEFAULT 0, `item_break_total` INT DEFAULT 0, `item_consume` INT DEFAULT 0, `item_consume_total` INT DEFAULT 0, `item_craft` INT DEFAULT 0, `item_craft_total` INT DEFAULT 0, `item_enchant` INT DEFAULT 0, `item_enchant_total` INT DEFAULT 0, `void_fall` INT DEFAULT 0, " +
-			"`void_fall_total` INT DEFAULT 0, FOREIGN KEY (player_uuid) REFERENCES player (uuid) ON DELETE CASCADE);";
+		String createStatisticTable;
+		createStatisticTable = "CREATE TABLE IF NOT EXISTS `" + STATISTIC_DATABASE_TABLE + "` (`player_uuid` varchar(36) NOT NULL,`statistic_type` varchar(36) NOT NULL, `statistic_value` varchar(36) NOT NULL, FOREIGN KEY (player_uuid) " +
+			"REFERENCES player (uuid) ON DELETE CASCADE);";
+
+		String createStatisticIndex = "CREATE INDEX IF NOT EXISTS `player_uuid` ON `" + STATISTIC_DATABASE_TABLE + "` (`player_uuid`);";
 
 		if (StorageManager.isMySQL()) {
 			assert StorageManager.getMySQLDatabase() != null : "Create table failed.";
-			StorageManager.getMySQLDatabase().createTable(statisticTable);
+			StorageManager.getMySQLDatabase().createTable(createStatisticTable);
+			StorageManager.getMySQLDatabase().createTable(createStatisticIndex);
 			return;
 		}
 
 		assert StorageManager.getSQLiteDatabase() != null : "Create table failed.";
-		StorageManager.getSQLiteDatabase().createTable(statisticTable);
+		StorageManager.getSQLiteDatabase().createTable(createStatisticTable);
+		StorageManager.getSQLiteDatabase().createTable(createStatisticIndex);
 	}
 
 	private void setupPlaceholder() {

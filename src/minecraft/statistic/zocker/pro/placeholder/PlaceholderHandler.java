@@ -2,9 +2,11 @@ package minecraft.statistic.zocker.pro.placeholder;
 
 import me.clip.placeholderapi.expansion.Configurable;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import minecraft.statistic.zocker.pro.Statistic;
+import minecraft.statistic.zocker.pro.StatisticManager;
 import org.bukkit.OfflinePlayer;
-import minecraft.statistic.zocker.pro.StatisticType;
 import minecraft.statistic.zocker.pro.StatisticZocker;
+
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -52,16 +54,21 @@ public class PlaceholderHandler extends PlaceholderExpansion implements Configur
 				String type = identifier.replace("placement_", "");
 				if (type == null || type.length() == 0) return "";
 
-				return String.valueOf(statisticZocker.getPlacement(StatisticType.valueOf(type.toUpperCase())).get());
+				int placement = statisticZocker.getPlacement(type).get();
+				if (placement == 0) return "0";
+
+				return String.valueOf(placement);
 			}
 
 			if (identifier.equalsIgnoreCase("kd")) {
 				return statisticZocker.getKD().get();
 			}
 
-			for (StatisticType type : StatisticType.values()) {
+			for (String type : StatisticManager.getStatisticTypes()) {
 				if (identifier.equalsIgnoreCase(type.toString())) {
-					return statisticZocker.get(type).get();
+					Statistic statistic = statisticZocker.get(type).get();
+					if (statistic == null) return "0";
+					return statistic.getValue();
 				}
 			}
 		} catch (InterruptedException | ExecutionException e) {

@@ -10,15 +10,15 @@ public class StatisticResetEvent extends Event {
 	private static final HandlerList HANDLER_LIST = new HandlerList();
 
 	private final Player player;
-	private final StatisticType statisticType;
+	private final String statisticType;
 
-	public StatisticResetEvent(Player player, StatisticType type) {
+	public StatisticResetEvent(Player player, String type) {
 		super(true);
 		this.player = player;
 		this.statisticType = type;
 	}
 
-	public StatisticResetEvent(Player player, StatisticType type, boolean async) {
+	public StatisticResetEvent(Player player, String type, boolean async) {
 		super(async);
 		this.player = player;
 		this.statisticType = type;
@@ -28,7 +28,7 @@ public class StatisticResetEvent extends Event {
 		return player;
 	}
 
-	public StatisticType getStatisticType() {
+	public String getStatisticType() {
 		return statisticType;
 	}
 

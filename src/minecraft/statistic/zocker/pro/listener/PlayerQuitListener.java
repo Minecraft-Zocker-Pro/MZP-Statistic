@@ -15,15 +15,15 @@ public class PlayerQuitListener implements Listener {
 	public void onPlayerQuit(PlayerQuitEvent e) {
 		StatisticZocker statisticZocker = new StatisticZocker(e.getPlayer().getUniqueId());
 
-		statisticZocker.get(StatisticType.STREAK).thenAccept(currentStreakString -> {
+		statisticZocker.get(StatisticType.STREAK).thenAccept(statistic -> {
 			try {
-				if (currentStreakString == null) return;
-				int currentStreak = Integer.valueOf(currentStreakString);
+				if (statistic == null) return;
+				int currentStreak = Integer.parseInt(statistic.getValue());
 
-				String currentStreaksTopString = statisticZocker.get(StatisticType.STREAK_TOP).get();
+				String currentStreaksTopString = statisticZocker.get(StatisticType.STREAK_TOP).get().getValue();
 				if (currentStreaksTopString == null) return;
 
-				if (currentStreak > Integer.valueOf(currentStreaksTopString)) {
+				if (currentStreak > Integer.parseInt(currentStreaksTopString)) {
 					statisticZocker.set(StatisticType.STREAK_TOP, String.valueOf(currentStreak));
 				}
 			} catch (InterruptedException | ExecutionException e1) {

@@ -10,15 +10,15 @@ public class StatisticRemoveEvent extends Event {
 	private static final HandlerList HANDLER_LIST = new HandlerList();
 
 	private final Player player;
-	private final StatisticType statisticType;
+	private final String statisticType;
 
-	public StatisticRemoveEvent(Player player, StatisticType type) {
+	public StatisticRemoveEvent(Player player, String type) {
 		super(true);
 		this.player = player;
 		this.statisticType = type;
 	}
 
-	public StatisticRemoveEvent(Player player, StatisticType type, boolean async) {
+	public StatisticRemoveEvent(Player player, String type, boolean async) {
 		super(async);
 		this.player = player;
 		this.statisticType = type;
@@ -28,7 +28,7 @@ public class StatisticRemoveEvent extends Event {
 		return player;
 	}
 
-	public StatisticType getStatisticType() {
+	public String getStatisticType() {
 		return statisticType;
 	}
 

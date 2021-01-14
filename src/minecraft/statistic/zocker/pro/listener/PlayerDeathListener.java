@@ -33,17 +33,17 @@ public class PlayerDeathListener implements Listener {
 		StatisticZocker statisticZocker = new StatisticZocker(player.getUniqueId());
 
 		// Streak
-		statisticZocker.get(StatisticType.STREAK).thenAcceptAsync(streaksString -> {
-			if (streaksString == null) return;
-			int currentStreak = Integer.valueOf(streaksString);
+		statisticZocker.get(StatisticType.STREAK).thenAcceptAsync(statistic -> {
+			if (statistic == null) return;
+			int currentStreak = Integer.parseInt(statistic.getValue());
 
 			statisticZocker.add(StatisticType.DEATH, 1);
 			statisticZocker.reset(StatisticType.STREAK);
 
 			try {
-				String streaksTop = statisticZocker.get(StatisticType.STREAK_TOP).get();
+				String streaksTop = statisticZocker.get(StatisticType.STREAK_TOP).get().getValue();
 				if (streaksTop != null) {
-					if (currentStreak > Integer.valueOf(streaksTop)) {
+					if (currentStreak > Integer.parseInt(streaksTop)) {
 						statisticZocker.set(StatisticType.STREAK_TOP, String.valueOf(currentStreak));
 					}
 				}

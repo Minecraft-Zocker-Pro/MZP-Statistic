@@ -34,7 +34,7 @@ public class LeaderboardCommand extends Command {
 				String type = args[0];
 				if (type == null) return;
 
-				new LeaderboardTopInventory(zocker, StatisticType.valueOf(type.toUpperCase())).open(zocker);
+				new LeaderboardTopInventory(zocker, type.toUpperCase()).open(zocker);
 			}
 
 		}

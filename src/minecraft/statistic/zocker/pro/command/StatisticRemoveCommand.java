@@ -59,7 +59,6 @@ public class StatisticRemoveCommand extends SubCommand {
 				return;
 			}
 
-			StatisticType type = StatisticType.valueOf(typeString.toUpperCase());
 			Player target = Bukkit.getPlayer(targetName);
 
 			if (target == null) {
@@ -70,7 +69,7 @@ public class StatisticRemoveCommand extends SubCommand {
 				}
 
 				StatisticZocker statisticZocker = new StatisticZocker(uuid);
-				statisticZocker.remove(type, Integer.valueOf(amountString));
+				statisticZocker.remove(typeString.toUpperCase(), Integer.parseInt(amountString));
 				sendAddedMessage(sender, Main.STATISTIC_MESSAGE.getString("statistic.command.statistic.remove")
 					.replace("%type%", typeString)
 					.replace("%target%", targetName)
@@ -79,7 +78,7 @@ public class StatisticRemoveCommand extends SubCommand {
 			}
 
 			StatisticZocker statisticZocker = new StatisticZocker(target.getUniqueId());
-			statisticZocker.remove(type, Integer.valueOf(amountString));
+			statisticZocker.remove(typeString.toUpperCase(), Integer.valueOf(amountString));
 			sendAddedMessage(sender, Main.STATISTIC_MESSAGE.getString("statistic.command.statistic.remove")
 				.replace("%type%", typeString)
 				.replace("%target%", targetName)

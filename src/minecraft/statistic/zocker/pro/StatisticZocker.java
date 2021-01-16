@@ -215,7 +215,7 @@ public class StatisticZocker extends Zocker {
 		return this.get(type.toUpperCase()).thenApplyAsync(statistic -> {
 			if (statistic == null) return 0;
 			if (statistic.getValue().equalsIgnoreCase("-1")) return 0;
-			
+
 			try {
 				return this.getPlacement(
 					Main.STATISTIC_DATABASE_TABLE,
@@ -266,8 +266,7 @@ public class StatisticZocker extends Zocker {
 			new String[]{"player_uuid", "statistic_type", "statistic_value"},
 			new Object[]{this.getUUIDString(), type, value},
 			new String[]{"player_uuid", "statistic_type"},
-			new Object[]{this.getUUIDString(), type},
-			this.getUUIDString());
+			new Object[]{this.getUUIDString(), type});
 	}
 
 	public CompletableFuture<String> getKD() {

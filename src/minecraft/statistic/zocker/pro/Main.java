@@ -2,14 +2,17 @@ package minecraft.statistic.zocker.pro;
 
 import minecraft.core.zocker.pro.CorePlugin;
 import minecraft.core.zocker.pro.compatibility.CompatibleMaterial;
+import minecraft.core.zocker.pro.condition.ConditionManager;
 import minecraft.core.zocker.pro.config.Config;
 import minecraft.core.zocker.pro.storage.StorageManager;
 import minecraft.statistic.zocker.pro.command.LeaderboardCommand;
 import minecraft.statistic.zocker.pro.command.StatisticCommand;
+import minecraft.statistic.zocker.pro.condition.player.custom.PlayerMZPStatisticCondition;
 import minecraft.statistic.zocker.pro.listener.*;
 import minecraft.statistic.zocker.pro.placeholder.PlaceholderHandler;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
@@ -44,6 +47,10 @@ public class Main extends CorePlugin {
 		this.registerCommand();
 		this.registerListener();
 
+		for (String statisticType : StatisticManager.getStatisticTypes()) {
+			ConditionManager.register(new PlayerMZPStatisticCondition(statisticType));
+		}
+		
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			setupPlaceholder();
 		}
@@ -415,6 +422,9 @@ public class Main extends CorePlugin {
 		// Leaderboard
 		STATISTIC_MENU_LEADERBOARD_OVERVIEW.reload();
 		STATISTIC_MENU_LEADERBOARD_TOP.reload();
+
+		HandlerList.unregisterAll(this);
+		this.registerListener();
 	}
 
 	private void verifyDatabase() {

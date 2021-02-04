@@ -1,7 +1,7 @@
 name: MZP-Statistic
 main: minecraft.statistic.zocker.pro.Main
 author: ludgart
-version: 0.0.3
+version: 0.0.4
 website: https://minecraft.plugin.zocker.pro/
 depend: [MZP-Core, PlaceholderAPI]
 softdepend: [MZP-Economy, MZP-Essential, Vault]

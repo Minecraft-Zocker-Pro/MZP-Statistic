@@ -2,12 +2,11 @@ package minecraft.statistic.zocker.pro;
 
 import minecraft.core.zocker.pro.CorePlugin;
 import minecraft.core.zocker.pro.compatibility.CompatibleMaterial;
-import minecraft.core.zocker.pro.condition.ConditionManager;
+import minecraft.core.zocker.pro.compatibility.ServerVersion;
 import minecraft.core.zocker.pro.config.Config;
 import minecraft.core.zocker.pro.storage.StorageManager;
 import minecraft.statistic.zocker.pro.command.LeaderboardCommand;
 import minecraft.statistic.zocker.pro.command.StatisticCommand;
-import minecraft.statistic.zocker.pro.condition.player.custom.PlayerMZPStatisticCondition;
 import minecraft.statistic.zocker.pro.listener.*;
 import minecraft.statistic.zocker.pro.placeholder.PlaceholderHandler;
 import net.milkbowl.vault.economy.Economy;
@@ -47,10 +46,6 @@ public class Main extends CorePlugin {
 		this.registerCommand();
 		this.registerListener();
 
-		for (String statisticType : StatisticManager.getStatisticTypes()) {
-			ConditionManager.register(new PlayerMZPStatisticCondition(statisticType));
-		}
-		
 		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
 			setupPlaceholder();
 		}
@@ -118,6 +113,12 @@ public class Main extends CorePlugin {
 
 		if (STATISTIC_CONFIG.getBool("statistic.player.kill.exp.enabled") || STATISTIC_CONFIG.getBool("statistic.player.kill.money.enabled")) {
 			pluginManager.registerEvents(new EntityKillListener(), this);
+		}
+
+		if (STATISTIC_CONFIG.getBool("statistic.player.breed.exp.enabled") || STATISTIC_CONFIG.getBool("statistic.player.breed.money.enabled")) {
+			if (ServerVersion.isServerVersionAtLeast(ServerVersion.V1_10)) {
+				pluginManager.registerEvents(new PlayerBreedListener(), this);
+			}
 		}
 
 		pluginManager.registerEvents(new PlayerVoidFallListener(), this);
@@ -261,6 +262,18 @@ public class Main extends CorePlugin {
 		STATISTIC_CONFIG.set("statistic.player.milk.money.actionbar.enabled", false, "0.0.1");
 		// endregion
 
+		// region Breed
+		STATISTIC_CONFIG.set("statistic.player.breed.exp.enabled", true, "0.0.5");
+		STATISTIC_CONFIG.set("statistic.player.breed.exp.min", 0, "0.0.5");
+		STATISTIC_CONFIG.set("statistic.player.breed.exp.max", 3, "0.0.5");
+		STATISTIC_CONFIG.set("statistic.player.breed.exp.actionbar.enabled", false, "0.0.5");
+
+		STATISTIC_CONFIG.set("statistic.player.breed.money.enabled", true, "0.0.5");
+		STATISTIC_CONFIG.set("statistic.player.breed.money.min", 0.25, "0.0.5");
+		STATISTIC_CONFIG.set("statistic.player.breed.money.max", 0.5, "0.0.5");
+		STATISTIC_CONFIG.set("statistic.player.breed.money.actionbar.enabled", false, "0.0.5");
+		// endregion
+
 		// region Tame
 		STATISTIC_CONFIG.set("statistic.player.tame.exp.enabled", true, "0.0.1");
 		STATISTIC_CONFIG.set("statistic.player.tame.exp.min", 5, "0.0.1");
@@ -347,7 +360,7 @@ public class Main extends CorePlugin {
 		STATISTIC_CONFIG.set("statistic.player.kill.friendly.money.actionbar.enabled", false, "0.0.1");
 		// endregion
 
-		STATISTIC_CONFIG.setVersion("0.0.1", true);
+		STATISTIC_CONFIG.setVersion("0.0.5", true);
 
 
 		// Menu Statistic Overview

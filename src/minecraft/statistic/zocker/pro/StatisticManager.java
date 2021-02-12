@@ -1,5 +1,8 @@
 package minecraft.statistic.zocker.pro;
 
+import minecraft.core.zocker.pro.condition.ConditionManager;
+import minecraft.statistic.zocker.pro.condition.player.custom.PlayerMZPStatisticCondition;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +13,8 @@ public class StatisticManager {
 	public static void register(String statistic) {
 		if (STATISTIC_TYPES.contains(statistic)) return;
 		STATISTIC_TYPES.add(statistic);
+
+		ConditionManager.register(new PlayerMZPStatisticCondition(statistic));
 	}
 
 	public static void unregister(String statistic) {

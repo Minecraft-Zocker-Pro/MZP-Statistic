@@ -21,6 +21,9 @@ public enum StatisticType {
 	MILK,
 	MILK_TOTAL,
 
+	BREED,
+	BREED_TOTAL,
+	
 	TAME,
 	TAME_TOTAL,
 

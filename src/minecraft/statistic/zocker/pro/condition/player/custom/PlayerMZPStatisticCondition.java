@@ -32,7 +32,12 @@ public class PlayerMZPStatisticCondition extends PlayerCondition {
 
 	@Override
 	public String getDisplay() {
-		return this.statisticType.toLowerCase();
+		String display = this.statisticType.toLowerCase();
+		display = display.replace("_", " ");
+		display = display.toLowerCase();
+		display = display.substring(0, 1).toUpperCase() + display.substring(1);
+		
+		return display;
 	}
 
 	@Override

@@ -84,7 +84,7 @@ public class StatisticCommand extends Command {
 			if (target == null) {
 				UUID uuid = OfflineZocker.fetchUUID(args[0]);
 				if (uuid == null) {
-					CompatibleMessage.sendMessage(player, Main.STATISTIC_MESSAGE.getString("statistic.prefix") + Main.STATISTIC_MESSAGE.getString("statistic.player.offline"));
+					CompatibleMessage.sendMessage(player, Main.STATISTIC_MESSAGE.getString("statistic.prefix") + Main.STATISTIC_MESSAGE.getString("statistic.player.offline").replace("%player%", args[0]));
 					return;
 				}
 
@@ -98,7 +98,7 @@ public class StatisticCommand extends Command {
 				return;
 			}
 
-			CompatibleMessage.sendMessage(player, Main.STATISTIC_MESSAGE.getString("statistic.prefix") + Main.STATISTIC_MESSAGE.getString("statistic.player.offline"));
+			CompatibleMessage.sendMessage(player, Main.STATISTIC_MESSAGE.getString("statistic.prefix") + Main.STATISTIC_MESSAGE.getString("statistic.player.offline").replace("%player%", target.getName()));
 		}
 	}
 

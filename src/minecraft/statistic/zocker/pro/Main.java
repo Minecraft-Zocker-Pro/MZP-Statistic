@@ -303,12 +303,12 @@ public class Main extends CorePlugin {
 		// region Death
 		STATISTIC_CONFIG.set("statistic.player.death.message.enabled", false, "0.0.1");
 
-		STATISTIC_CONFIG.set("statistic.player.death.exp.enabled", false, "0.0.1");
+		STATISTIC_CONFIG.set("statistic.player.death.exp.enabled", true, "0.0.1");
 		STATISTIC_CONFIG.set("statistic.player.death.exp.min", 0, "0.0.1");
 		STATISTIC_CONFIG.set("statistic.player.death.exp.max", 0, "0.0.1");
 		STATISTIC_CONFIG.set("statistic.player.death.exp.actionbar.enabled", false, "0.0.1");
 
-		STATISTIC_CONFIG.set("statistic.player.death.money.enabled", false, "0.0.1");
+		STATISTIC_CONFIG.set("statistic.player.death.money.enabled", true, "0.0.1");
 		STATISTIC_CONFIG.set("statistic.player.death.money.min", 0, "0.0.1");
 		STATISTIC_CONFIG.set("statistic.player.death.money.max", 0, "0.0.1");
 		STATISTIC_CONFIG.set("statistic.player.death.money.actionbar.enabled", false, "0.0.1");

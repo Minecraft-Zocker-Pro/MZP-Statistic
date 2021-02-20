@@ -20,12 +20,12 @@ public class PlayerItemBreakListener implements Listener {
 		Config config = Main.STATISTIC_CONFIG;
 		StatisticZocker statisticZocker = new StatisticZocker(player.getUniqueId());
 
-		if (config.getString("statistic.player.break.place.whitelist").equalsIgnoreCase("*")) {
+		if (config.getString("statistic.player.item.break.whitelist").equalsIgnoreCase("*")) {
 			statisticZocker.add(StatisticType.ITEM_BREAK);
 			addXp(statisticZocker, config);
 			addMoney(statisticZocker, config);
 		} else {
-			List<String> itemWhitelist = config.getStringList("statistic.player.break.place.whitelist");
+			List<String> itemWhitelist = config.getStringList("statistic.player.item.break.place.whitelist");
 
 			for (String name : itemWhitelist) {
 				if (e.getBrokenItem().getType() == CompatibleMaterial.valueOf(name).getMaterial()) {
@@ -39,20 +39,20 @@ public class PlayerItemBreakListener implements Listener {
 	}
 
 	private void addXp(StatisticZocker statisticZocker, Config config) {
-		if (!config.getBool("statistic.player.break.place.exp.enabled")) return;
+		if (!config.getBool("statistic.player.item.break.place.exp.enabled")) return;
 
 		statisticZocker.addXp(StatisticType.ITEM_BREAK,
-			config.getDouble("statistic.player.break.place.exp.min"),
-			config.getDouble("statistic.player.break.place.exp.max"),
-			"statistic.player.break.place.exp");
+			config.getDouble("statistic.player.item.break.place.exp.min"),
+			config.getDouble("statistic.player.item.break.place.exp.max"),
+			"statistic.player.item.break.place.exp");
 	}
 
 	private void addMoney(StatisticZocker statisticZocker, Config config) {
-		if (!config.getBool("statistic.player.break.place.money.enabled")) return;
+		if (!config.getBool("statistic.player.item.break.place.money.enabled")) return;
 
 		statisticZocker.addMoney(StatisticType.ITEM_BREAK,
-			config.getDouble("statistic.player.break.place.money.min"),
-			config.getDouble("statistic.player.break.place.money.max"),
-			"statistic.player.break.place.money");
+			config.getDouble("statistic.player.item.break.place.money.min"),
+			config.getDouble("statistic.player.item.break.place.money.max"),
+			"statistic.player.item.break.place.money");
 	}
 }

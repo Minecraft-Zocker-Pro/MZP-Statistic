@@ -188,6 +188,7 @@ public class StatisticZocker extends Zocker {
 	}
 
 	public CompletableFuture<Boolean> reset(StatisticType type) {
+		Bukkit.getPluginManager().callEvent(new StatisticResetEvent(getPlayer(), type.toString(), false));
 		return this.set(type.toString(), "0");
 	}
 

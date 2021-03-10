@@ -1,10 +1,10 @@
 name: MZP-Statistic
 main: minecraft.statistic.zocker.pro.Main
 author: ludgart
-version: 0.0.6
+version: 0.0.7
 website: https://minecraft.plugin.zocker.pro/
-depend: [MZP-Core, PlaceholderAPI]
-softdepend: [MZP-Economy, MZP-Essential, Vault]
+depend: [ MZP-Core, PlaceholderAPI ]
+softdepend: [ MZP-Economy, MZP-Essential, Vault ]
 
 api-version: 1.13
 
@@ -13,9 +13,9 @@ commands:
     usage: /<command>
     description: Statistic
     permission: mzp.statistic.command.statistic
-    aliases: [stat, stats]
+    aliases: [ stat, stats ]
   leaderboard:
     usage: /<command>
     description: Leaderboard
     permission: mzp.statistic.command.leaderboard
-    aliases: [leaderboards]
+    aliases: [ leaderboards ]

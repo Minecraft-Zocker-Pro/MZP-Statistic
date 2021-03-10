@@ -89,6 +89,7 @@ public class StatisticZocker extends Zocker {
 
 	public void addXp(String type, double min, double max, String configPath) {
 		if (min == 0 || max == 0 || configPath == null) return;
+		if (getPlayer() == null || !getPlayer().isOnline()) return;
 
 		int exp = Util.getRandomNumberBetween((int) min, (int) max);
 		getPlayer().giveExp(exp);
@@ -104,6 +105,7 @@ public class StatisticZocker extends Zocker {
 
 	public void removeXp(String type, double min, double max, String configPath) {
 		if (min == 0 || max == 0 || configPath == null) return;
+		if (getPlayer() == null || !getPlayer().isOnline()) return;
 
 		int expRemove = Util.getRandomNumberBetween((int) min, (int) max);
 		Player player = getPlayer();

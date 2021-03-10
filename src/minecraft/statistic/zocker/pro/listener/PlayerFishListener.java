@@ -12,7 +12,7 @@ public class PlayerFishListener implements Listener {
 
 	@EventHandler
 	public void onPlayerFish(PlayerFishEvent e) {
-		if (e.getState() == PlayerFishEvent.State.CAUGHT_FISH || e.getState() == PlayerFishEvent.State.CAUGHT_ENTITY) {
+		if (e.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
 			StatisticZocker statisticZocker = new StatisticZocker(e.getPlayer().getUniqueId());
 			Config config = Main.STATISTIC_CONFIG;
 

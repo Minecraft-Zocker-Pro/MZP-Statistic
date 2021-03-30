@@ -8,6 +8,7 @@ import minecraft.core.zocker.pro.config.Config;
 import minecraft.core.zocker.pro.event.PlayerVoidFallEvent;
 import minecraft.essential.zocker.pro.command.spawn.SpawnCommand;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,7 +17,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitRunnable;
-import minecraft.core.zocker.pro.config.Config;
 import minecraft.statistic.zocker.pro.Main;
 import minecraft.statistic.zocker.pro.StatisticType;
 import minecraft.statistic.zocker.pro.StatisticZocker;
@@ -56,12 +56,17 @@ public class PlayerVoidFallListener implements Listener {
 
 			player.setItemOnCursor(new ItemStack(Material.AIR));
 
-			// Crafting menu
-			player.getOpenInventory().getTopInventory().setItem(0, new ItemStack(Material.AIR));
-			player.getOpenInventory().getTopInventory().setItem(1, new ItemStack(Material.AIR));
-			player.getOpenInventory().getTopInventory().setItem(2, new ItemStack(Material.AIR));
-			player.getOpenInventory().getTopInventory().setItem(3, new ItemStack(Material.AIR));
-			player.getOpenInventory().getTopInventory().setItem(4, new ItemStack(Material.AIR));
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					// Crafting menu
+					player.getOpenInventory().getTopInventory().setItem(0, new ItemStack(Material.AIR));
+					player.getOpenInventory().getTopInventory().setItem(1, new ItemStack(Material.AIR));
+					player.getOpenInventory().getTopInventory().setItem(2, new ItemStack(Material.AIR));
+					player.getOpenInventory().getTopInventory().setItem(3, new ItemStack(Material.AIR));
+					player.getOpenInventory().getTopInventory().setItem(4, new ItemStack(Material.AIR));
+				}
+			}.runTask(Main.getPlugin());
 		}
 
 		// Reset level
@@ -118,12 +123,12 @@ public class PlayerVoidFallListener implements Listener {
 
 		if (Bukkit.getPluginManager().isPluginEnabled("MZP-Essential")) {
 			if (SpawnCommand.getSpawnLocation() != null) {
-				player.teleport(SpawnCommand.getSpawnLocation());
+				runSynchronous(player, SpawnCommand.getSpawnLocation());
 			} else {
-				player.teleport(player.getWorld().getSpawnLocation());
+				runSynchronous(player, player.getWorld().getSpawnLocation());
 			}
 		} else {
-			player.teleport(player.getWorld().getSpawnLocation());
+			runSynchronous(player, player.getWorld().getSpawnLocation());
 		}
 
 		CompatibleSound.playTeleportSound(player);
@@ -180,5 +185,14 @@ public class PlayerVoidFallListener implements Listener {
 			config.getDouble("statistic.player.death.money.min"),
 			config.getDouble("statistic.player.death.money.max"),
 			"statistic.player.death.money");
+	}
+
+	private void runSynchronous(Player player, Location location) {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				player.teleport(location);
+			}
+		}.runTask(Main.getPlugin());
 	}
 }

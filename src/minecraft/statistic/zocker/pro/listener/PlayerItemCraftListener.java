@@ -5,7 +5,7 @@ import minecraft.core.zocker.pro.config.Config;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import minecraft.statistic.zocker.pro.Main;
 import minecraft.statistic.zocker.pro.StatisticType;
 import minecraft.statistic.zocker.pro.StatisticZocker;
@@ -15,7 +15,7 @@ import java.util.List;
 public class PlayerItemCraftListener implements Listener {
 
 	@EventHandler
-	public void onPlayerItemCraft(PrepareItemCraftEvent e) {
+	public void onPlayerItemCraft(CraftItemEvent e) {
 		Player player = (Player) e.getView().getPlayer();
 		Config config = Main.STATISTIC_CONFIG;
 		StatisticZocker statisticZocker = new StatisticZocker(player.getUniqueId());
@@ -28,7 +28,6 @@ public class PlayerItemCraftListener implements Listener {
 			List<String> blockWhitelist = config.getStringList("statistic.player.item.craft.whitelist");
 
 			for (String name : blockWhitelist) {
-				if (e.getRecipe() == null) continue;
 				if (e.getRecipe().getResult().getType() == CompatibleMaterial.valueOf(name).getMaterial()) {
 					statisticZocker.add(StatisticType.ITEM_CRAFT);
 					addXp(statisticZocker, config);

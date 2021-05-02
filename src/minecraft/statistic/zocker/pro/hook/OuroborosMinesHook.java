@@ -1,27 +1,24 @@
-package minecraft.statistic.zocker.pro.listener;
+package minecraft.statistic.zocker.pro.hook;
 
+import dev.th3shadowbroker.ouroboros.mines.events.MaterialMinedEvent;
 import minecraft.core.zocker.pro.compatibility.CompatibleMaterial;
 import minecraft.core.zocker.pro.config.Config;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
 import minecraft.statistic.zocker.pro.Main;
 import minecraft.statistic.zocker.pro.StatisticType;
 import minecraft.statistic.zocker.pro.StatisticZocker;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 import java.util.List;
 
-public class PlayerBlockBreakListener implements Listener {
+public class OuroborosMinesHook implements Listener {
 
-	@EventHandler(priority = EventPriority.HIGH)
-	public void onPlayerBlockBreak(BlockBreakEvent e) {
-		if (e.isCancelled()) return;
-		
-		Block block = e.getBlock();
-		Player player = e.getPlayer();
+	@EventHandler
+	public void onMaterialMined(MaterialMinedEvent event) {
+		Player player = event.getPlayer();
+		Block block = event.getBlock();
 
 		Config config = Main.STATISTIC_CONFIG;
 		StatisticZocker statisticZocker = new StatisticZocker(player.getUniqueId());

@@ -5,6 +5,7 @@ import minecraft.core.zocker.pro.config.Config;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import minecraft.statistic.zocker.pro.Main;
@@ -15,8 +16,10 @@ import java.util.List;
 
 public class PlayerBlockPlaceListener implements Listener {
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerBlockPlace(BlockPlaceEvent e) {
+		if (e.isCancelled()) return;
+		
 		Block block = e.getBlock();
 		Player player = e.getPlayer();
 

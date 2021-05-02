@@ -4,6 +4,7 @@ import minecraft.core.zocker.pro.compatibility.CompatibleMaterial;
 import minecraft.core.zocker.pro.config.Config;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import minecraft.statistic.zocker.pro.Main;
@@ -14,8 +15,10 @@ import java.util.List;
 
 public class PlayerItemConsumeListener implements Listener {
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerConsume(PlayerItemConsumeEvent e) {
+		if (e.isCancelled()) return;
+		
 		Player player = e.getPlayer();
 		Config config = Main.STATISTIC_CONFIG;
 		StatisticZocker statisticZocker = new StatisticZocker(player.getUniqueId());

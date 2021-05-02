@@ -7,6 +7,7 @@ import minecraft.core.zocker.pro.config.Config;
 import minecraft.core.zocker.pro.storage.StorageManager;
 import minecraft.statistic.zocker.pro.command.LeaderboardCommand;
 import minecraft.statistic.zocker.pro.command.StatisticCommand;
+import minecraft.statistic.zocker.pro.hook.OuroborosMinesHook;
 import minecraft.statistic.zocker.pro.listener.*;
 import minecraft.statistic.zocker.pro.placeholder.PlaceholderHandler;
 import net.milkbowl.vault.economy.Economy;
@@ -14,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class Main extends CorePlugin {
 
@@ -32,13 +34,13 @@ public class Main extends CorePlugin {
 		PLUGIN = this;
 
 		if (!Bukkit.getPluginManager().isPluginEnabled("MZP-Core")) {
-			System.out.println("Disabled due to no MZP-Core dependency found!");
+			getLogger().warning("Disabled due to no MZP-Core dependency found!");
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
 
 		if (setupEconomy()) {
-			System.out.println("Hooked into Vault!");
+			getLogger().info("Hooked Vault");
 		}
 
 		this.buildConfig();
@@ -46,11 +48,16 @@ public class Main extends CorePlugin {
 		this.registerCommand();
 		this.registerListener();
 
-		if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-			setupPlaceholder();
-		}
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+					setupPlaceholder();
+				}
+			}
+		}.runTaskLater(Main.getPlugin(), 1);
 
-		System.out.println(StatisticManager.getStatisticTypes().size() + " Statistics registered");
+		getLogger().info(StatisticManager.getStatisticTypes().size() + " Statistics registered");
 	}
 
 	@Override
@@ -69,6 +76,17 @@ public class Main extends CorePlugin {
 
 		if (STATISTIC_CONFIG.getBool("statistic.player.block.break.exp.enabled") || STATISTIC_CONFIG.getBool("statistic.player.block.break.money.enabled")) {
 			pluginManager.registerEvents(new PlayerBlockBreakListener(), this);
+
+			// Hook
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					if (pluginManager.isPluginEnabled("OuroborosMines")) {
+						getLogger().info("Hooked OuroborosMines");
+						pluginManager.registerEvents(new OuroborosMinesHook(), Main.getPlugin());
+					}
+				}
+			}.runTaskLater(this, 1L);
 		}
 
 		if (STATISTIC_CONFIG.getBool("statistic.player.item.craft.exp.enabled") || STATISTIC_CONFIG.getBool("statistic.player.item.craft.money.enabled")) {

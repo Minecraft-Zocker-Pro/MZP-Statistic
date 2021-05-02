@@ -2,6 +2,7 @@ package minecraft.statistic.zocker.pro.listener;
 
 import minecraft.core.zocker.pro.config.Config;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import minecraft.statistic.zocker.pro.Main;
@@ -10,10 +11,10 @@ import minecraft.statistic.zocker.pro.StatisticZocker;
 
 public class PlayerShearListener implements Listener {
 
-	private static final Config CONFIG = Config.getConfig("config.yml", "stats");
-
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerShear(PlayerShearEntityEvent e) {
+		if (e.isCancelled()) return;
+		
 		StatisticZocker statisticZocker = new StatisticZocker(e.getPlayer().getUniqueId());
 		Config config = Main.STATISTIC_CONFIG;
 

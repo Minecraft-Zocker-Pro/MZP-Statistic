@@ -6,13 +6,16 @@ import minecraft.statistic.zocker.pro.StatisticType;
 import minecraft.statistic.zocker.pro.StatisticZocker;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityBreedEvent;
 
 public class PlayerBreedListener implements Listener {
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerBreed(EntityBreedEvent e) {
+		if (e.isCancelled()) return;
+		
 		if (e.getBreeder() instanceof Player) {
 			StatisticZocker statisticZocker = new StatisticZocker(e.getBreeder().getUniqueId());
 			Config config = Main.STATISTIC_CONFIG;

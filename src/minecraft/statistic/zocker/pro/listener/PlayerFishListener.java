@@ -2,6 +2,7 @@ package minecraft.statistic.zocker.pro.listener;
 
 import minecraft.core.zocker.pro.config.Config;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerFishEvent;
 import minecraft.statistic.zocker.pro.Main;
@@ -10,8 +11,10 @@ import minecraft.statistic.zocker.pro.StatisticZocker;
 
 public class PlayerFishListener implements Listener {
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerFish(PlayerFishEvent e) {
+		if (e.isCancelled()) return;
+		
 		if (e.getState() == PlayerFishEvent.State.CAUGHT_FISH) {
 			StatisticZocker statisticZocker = new StatisticZocker(e.getPlayer().getUniqueId());
 			Config config = Main.STATISTIC_CONFIG;

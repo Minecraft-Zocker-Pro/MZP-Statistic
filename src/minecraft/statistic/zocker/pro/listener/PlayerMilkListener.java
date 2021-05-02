@@ -3,6 +3,7 @@ package minecraft.statistic.zocker.pro.listener;
 import minecraft.core.zocker.pro.compatibility.CompatibleMaterial;
 import minecraft.core.zocker.pro.config.Config;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import minecraft.statistic.zocker.pro.Main;
@@ -11,9 +12,11 @@ import minecraft.statistic.zocker.pro.StatisticZocker;
 
 public class PlayerMilkListener implements Listener {
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerMilk(PlayerBucketFillEvent e) {
+		if (e.isCancelled()) return;
 		if (e.getItemStack() == null) return;
+
 		if (e.getItemStack().getType() == CompatibleMaterial.MILK_BUCKET.getMaterial()) {
 			StatisticZocker statisticZocker = new StatisticZocker(e.getPlayer().getUniqueId());
 			Config config = Main.STATISTIC_CONFIG;

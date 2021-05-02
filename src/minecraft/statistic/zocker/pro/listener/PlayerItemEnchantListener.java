@@ -7,6 +7,7 @@ import minecraft.statistic.zocker.pro.StatisticType;
 import minecraft.statistic.zocker.pro.StatisticZocker;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 
@@ -14,8 +15,10 @@ import java.util.List;
 
 public class PlayerItemEnchantListener implements Listener {
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerItemEnchant(EnchantItemEvent e) {
+		if (e.isCancelled()) return;
+		
 		Player player = e.getEnchanter();
 
 		Config config = Main.STATISTIC_CONFIG;

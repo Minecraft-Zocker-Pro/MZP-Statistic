@@ -4,6 +4,7 @@ import minecraft.core.zocker.pro.config.Config;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import minecraft.statistic.zocker.pro.Main;
@@ -14,8 +15,10 @@ import java.util.List;
 
 public class PlayerThrowListener implements Listener {
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerThrow(ProjectileLaunchEvent e) {
+		if (e.isCancelled()) return;
+		
 		if (e.getEntity().getShooter() instanceof Player) {
 			Player player = (Player) e.getEntity().getShooter();
 

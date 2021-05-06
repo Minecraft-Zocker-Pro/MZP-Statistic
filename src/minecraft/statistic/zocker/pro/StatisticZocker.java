@@ -133,30 +133,33 @@ public class StatisticZocker extends Zocker {
 	public void add(String type, int amount) {
 		if (amount == 0) return;
 
+		type = type.toUpperCase();
+		String finalType = type;
+
 		this.get(type).thenAcceptAsync(statistic -> {
 			try {
 				if (statistic == null) {
-					insert(type, String.valueOf(amount));
-					Bukkit.getPluginManager().callEvent(new StatisticAddEvent(getPlayer(), type, true));
+					insert(finalType, String.valueOf(amount));
+					Bukkit.getPluginManager().callEvent(new StatisticAddEvent(getPlayer(), finalType, true));
 
-					insert(type + "_TOTAL", String.valueOf(amount));
-					Bukkit.getPluginManager().callEvent(new StatisticAddEvent(getPlayer(), type + "_TOTAL", true));
+					insert(finalType + "_TOTAL", String.valueOf(amount));
+					Bukkit.getPluginManager().callEvent(new StatisticAddEvent(getPlayer(), finalType + "_TOTAL", true));
 					return;
 				}
 
 				int value = Integer.parseInt(statistic.getValue());
 
-				this.set(type, String.valueOf((value + amount)));
-				Bukkit.getPluginManager().callEvent(new StatisticAddEvent(getPlayer(), type, true));
+				this.set(finalType, String.valueOf((value + amount)));
+				Bukkit.getPluginManager().callEvent(new StatisticAddEvent(getPlayer(), finalType, true));
 
-				String valueTopString = this.get(type + "_TOTAL").get().getValue();
+				String valueTopString = this.get(finalType + "_TOTAL").get().getValue();
 
 				if (valueTopString == null) return;
 
 				int valueTop = Integer.parseInt(valueTopString);
 
-				this.set(type + "_TOTAL", String.valueOf((valueTop + amount)));
-				Bukkit.getPluginManager().callEvent(new StatisticAddEvent(getPlayer(), type + "_TOTAL", true));
+				this.set(finalType + "_TOTAL", String.valueOf((valueTop + amount)));
+				Bukkit.getPluginManager().callEvent(new StatisticAddEvent(getPlayer(), finalType + "_TOTAL", true));
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
 			}
@@ -174,15 +177,18 @@ public class StatisticZocker extends Zocker {
 	public CompletableFuture<Boolean> remove(String type, int amount) {
 		if (amount == 0) return null;
 
+		type = type.toUpperCase();
+		String finalType = type;
+		
 		this.get(type).thenApplyAsync(statistic -> {
 			if (statistic == null) return null;
 			int value = Integer.parseInt(statistic.getValue());
 			if (value >= amount) {
-				Bukkit.getPluginManager().callEvent(new StatisticRemoveEvent(getPlayer(), type, true));
-				return this.set(type, String.valueOf((value - amount)));
+				Bukkit.getPluginManager().callEvent(new StatisticRemoveEvent(getPlayer(), finalType, true));
+				return this.set(finalType, String.valueOf((value - amount)));
 			} else {
-				Bukkit.getPluginManager().callEvent(new StatisticRemoveEvent(getPlayer(), type, true));
-				return this.set(type, "0");
+				Bukkit.getPluginManager().callEvent(new StatisticRemoveEvent(getPlayer(), finalType, true));
+				return this.set(finalType, "0");
 			}
 		});
 
@@ -215,6 +221,9 @@ public class StatisticZocker extends Zocker {
 	}
 
 	public CompletableFuture<Integer> getPlacement(String type) {
+		type = type.toUpperCase();
+		String finalType = type;
+		
 		return this.get(type.toUpperCase()).thenApplyAsync(statistic -> {
 			if (statistic == null) return 0;
 			if (statistic.getValue().equalsIgnoreCase("-1")) return 0;
@@ -226,7 +235,7 @@ public class StatisticZocker extends Zocker {
 					"player_uuid",
 					this.getUUIDString(),
 					"statistic_type",
-					type.toUpperCase())
+					finalType)
 					.get();
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
@@ -241,10 +250,13 @@ public class StatisticZocker extends Zocker {
 	}
 
 	public CompletableFuture<Boolean> set(String type, String value) {
+		type = type.toUpperCase();
+		String finalType = type;
+		
 		return this.get(type).thenApplyAsync(statistic -> {
 			if (statistic == null) {
 				try {
-					return this.insert(type, value).get();
+					return this.insert(finalType, value).get();
 				} catch (InterruptedException | ExecutionException e) {
 					e.printStackTrace();
 				}
@@ -255,7 +267,7 @@ public class StatisticZocker extends Zocker {
 					new String[]{"statistic_value"},
 					new Object[]{value},
 					new String[]{"player_uuid", "statistic_type"},
-					new Object[]{this.getUUIDString(), type}).get();
+					new Object[]{this.getUUIDString(), finalType}).get();
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
 			}
@@ -265,6 +277,8 @@ public class StatisticZocker extends Zocker {
 	}
 
 	private CompletableFuture<Boolean> insert(String type, String value) {
+		type = type.toUpperCase();
+
 		return this.insert(Main.STATISTIC_DATABASE_TABLE,
 			new String[]{"player_uuid", "statistic_type", "statistic_value"},
 			new Object[]{this.getUUIDString(), type, value},

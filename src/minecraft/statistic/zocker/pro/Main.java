@@ -431,16 +431,15 @@ public class Main extends CorePlugin {
 		STATISTIC_MESSAGE.set("statistic.player.offline", "Player &6%player% &3is not online.", "0.0.1");
 
 		// Command
-		STATISTIC_MESSAGE.set("statistic.command.statistic.add", "&3Added &6%amount% %type% &3to &6%target%.");
-		STATISTIC_MESSAGE.set("statistic.command.statistic.remove", "&3Removed &6%amount% %type% &3from &6%target%.");
-		STATISTIC_MESSAGE.set("statistic.command.statistic.set", "&3Player &6%target% &3set &6%amount% %type%&3.");
+		STATISTIC_MESSAGE.set("statistic.command.statistic.add", "&3Added &6%amount% %type% &3to &6%target%.", "0.0.1");
+		STATISTIC_MESSAGE.set("statistic.command.statistic.remove", "&3Removed &6%amount% %type% &3from &6%target%.", "0.0.1");
+		STATISTIC_MESSAGE.set("statistic.command.statistic.set", "&3Player &6%target% &3set &6%amount% %type%&3.", "0.0.1");
 
 		// Reward
-		STATISTIC_MESSAGE.set("statistic.reward.money.actionbar.add", "&3+$%money%");
-		STATISTIC_MESSAGE.set("statistic.reward.money.actionbar.remove", "&3-$%money%");
-		STATISTIC_MESSAGE.set("statistic.reward.exp.actionbar.add", "&3+%exp% EXP");
-		STATISTIC_MESSAGE.set("statistic.reward.exp.actionbar.remove", "&3-%exp% EXP");
-
+		STATISTIC_MESSAGE.set("statistic.reward.money.actionbar.add", "&3+$%money%", "0.0.1");
+		STATISTIC_MESSAGE.set("statistic.reward.money.actionbar.remove", "&3-$%money%", "0.0.1");
+		STATISTIC_MESSAGE.set("statistic.reward.exp.actionbar.add", "&3+%exp% EXP", "0.0.1");
+		STATISTIC_MESSAGE.set("statistic.reward.exp.actionbar.remove", "&3-%exp% EXP", "0.0.1");
 		STATISTIC_MESSAGE.setVersion("0.0.1", true);
 	}
 

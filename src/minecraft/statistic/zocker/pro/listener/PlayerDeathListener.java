@@ -1,5 +1,7 @@
 package minecraft.statistic.zocker.pro.listener;
 
+import minecraft.core.zocker.pro.compatibility.CompatibleMaterial;
+import minecraft.core.zocker.pro.compatibility.ServerVersion;
 import minecraft.core.zocker.pro.config.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -28,8 +30,12 @@ public class PlayerDeathListener implements Listener {
 		// Player
 		Player player = e.getEntity();
 
-		player.getLocation().getWorld().playEffect(player.getLocation().add(0.0D, 1.0D, 0.0D), Effect.STEP_SOUND, 152);
-//		CompatibleParticleHandler.spawnParticles(CompatibleParticleHandler.ParticleType.HEART, new Location(player.getLocation().getWorld(), player.getLocation().getX(), player.getLocation().getY() + 1.5, player.getLocation().getZ()), 4);
+		if (ServerVersion.isServerVersionAtOrBelow(ServerVersion.V1_8)) {
+			player.getLocation().getWorld().playEffect(player.getLocation().add(0.0D, 1.0D, 0.0D), Effect.STEP_SOUND, 152);
+		} else {
+			player.getWorld().playEffect(player.getLocation().add(0.0D, 1.0D, 0.0D), Effect.STEP_SOUND, CompatibleMaterial.REDSTONE_BLOCK.getMaterial());
+		}
+
 		StatisticZocker statisticZocker = new StatisticZocker(player.getUniqueId());
 
 		// Streak
@@ -55,7 +61,9 @@ public class PlayerDeathListener implements Listener {
 		// Killer
 		Player playerKiller = null;
 
-		if (e.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent) {
+		if (e.getEntity().
+
+			getLastDamageCause() instanceof EntityDamageByEntityEvent) {
 			EntityDamageByEntityEvent edbe = (EntityDamageByEntityEvent) e.getEntity().getLastDamageCause();
 			if (edbe.getDamager().hasMetadata("player")) {
 				Entity entity = edbe.getDamager();

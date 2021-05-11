@@ -179,7 +179,7 @@ public class StatisticZocker extends Zocker {
 
 		type = type.toUpperCase();
 		String finalType = type;
-		
+
 		this.get(type).thenApplyAsync(statistic -> {
 			if (statistic == null) return null;
 			int value = Integer.parseInt(statistic.getValue());
@@ -196,12 +196,17 @@ public class StatisticZocker extends Zocker {
 	}
 
 	public CompletableFuture<Boolean> reset(StatisticType type) {
-		Bukkit.getPluginManager().callEvent(new StatisticResetEvent(getPlayer(), type.toString(), false));
+		try {
+			Bukkit.getPluginManager().callEvent(new StatisticResetEvent(getPlayer(), type.toString(), true));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		return this.set(type.toString(), "0");
 	}
 
 	public CompletableFuture<Boolean> reset(String type) {
-		Bukkit.getPluginManager().callEvent(new StatisticResetEvent(getPlayer(), type, false));
+		Bukkit.getPluginManager().callEvent(new StatisticResetEvent(getPlayer(), type, true));
 		return this.set(type, "0");
 	}
 
@@ -223,7 +228,7 @@ public class StatisticZocker extends Zocker {
 	public CompletableFuture<Integer> getPlacement(String type) {
 		type = type.toUpperCase();
 		String finalType = type;
-		
+
 		return this.get(type.toUpperCase()).thenApplyAsync(statistic -> {
 			if (statistic == null) return 0;
 			if (statistic.getValue().equalsIgnoreCase("-1")) return 0;
@@ -252,7 +257,7 @@ public class StatisticZocker extends Zocker {
 	public CompletableFuture<Boolean> set(String type, String value) {
 		type = type.toUpperCase();
 		String finalType = type;
-		
+
 		return this.get(type).thenApplyAsync(statistic -> {
 			if (statistic == null) {
 				try {

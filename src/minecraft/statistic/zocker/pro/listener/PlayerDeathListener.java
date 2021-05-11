@@ -46,16 +46,12 @@ public class PlayerDeathListener implements Listener {
 			statisticZocker.add(StatisticType.DEATH, 1);
 			statisticZocker.reset(StatisticType.STREAK);
 
-			try {
-				String streaksTop = statisticZocker.get(StatisticType.STREAK_TOP).get().getValue();
-				if (streaksTop != null) {
-					if (currentStreak > Integer.parseInt(streaksTop)) {
-						statisticZocker.set(StatisticType.STREAK_TOP, String.valueOf(currentStreak));
-					}
+			statisticZocker.get(StatisticType.STREAK_TOP).thenAccept(streaksTop -> {
+				if (streaksTop == null || streaksTop.getValue() == null) return;
+				if (currentStreak > Integer.parseInt(streaksTop.getValue())) {
+					statisticZocker.set(StatisticType.STREAK_TOP, String.valueOf(currentStreak));
 				}
-			} catch (InterruptedException | ExecutionException e2) {
-				e2.printStackTrace();
-			}
+			});
 		});
 
 		// Killer

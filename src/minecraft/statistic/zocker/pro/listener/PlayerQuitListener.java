@@ -15,8 +15,10 @@ public class PlayerQuitListener implements Listener {
 	public void onPlayerQuit(PlayerQuitEvent e) {
 		StatisticZocker statisticZocker = new StatisticZocker(e.getPlayer().getUniqueId());
 
-		statisticZocker.get(StatisticType.STREAK).thenAccept(statistic -> {
+		statisticZocker.get(StatisticType.STREAK).thenAcceptAsync(statistic -> {
 			try {
+				statisticZocker.reset(StatisticType.STREAK);
+
 				if (statistic == null) return;
 				int currentStreak = Integer.parseInt(statistic.getValue());
 
@@ -29,8 +31,6 @@ public class PlayerQuitListener implements Listener {
 			} catch (InterruptedException | ExecutionException e1) {
 				e1.printStackTrace();
 			}
-
-			statisticZocker.reset(StatisticType.STREAK);
 		});
 	}
 }

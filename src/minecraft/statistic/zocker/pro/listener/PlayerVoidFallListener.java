@@ -65,6 +65,13 @@ public class PlayerVoidFallListener implements Listener {
 					player.getOpenInventory().getTopInventory().setItem(2, new ItemStack(Material.AIR));
 					player.getOpenInventory().getTopInventory().setItem(3, new ItemStack(Material.AIR));
 					player.getOpenInventory().getTopInventory().setItem(4, new ItemStack(Material.AIR));
+
+					// Reset potion
+					if (config.getBool("statistic.void.reset.inventory")) {
+						for (PotionEffect effect : player.getActivePotionEffects()) {
+							player.removePotionEffect(effect.getType());
+						}
+					}
 				}
 			}.runTask(Main.getPlugin());
 		}
@@ -79,18 +86,6 @@ public class PlayerVoidFallListener implements Listener {
 			player.setExp(0.0F);
 		}
 
-		// Reset potion
-		if (config.getBool("statistic.void.reset.inventory")) {
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					for (PotionEffect effect : player.getActivePotionEffects()) {
-						player.removePotionEffect(effect.getType());
-					}
-				}
-			}.runTask(Main.getPlugin());
-		}
-
 		player.setHealth(20.0D);
 		player.setFoodLevel(20);
 		player.setSaturation(20);
@@ -99,19 +94,16 @@ public class PlayerVoidFallListener implements Listener {
 
 		StatisticZocker statisticZocker = new StatisticZocker(player.getUniqueId());
 		statisticZocker.get(StatisticType.STREAK).thenAccept(statistic -> {
-			try {
-				if (statistic == null) return;
-				int currentStreak = Integer.parseInt(statistic.getValue());
+			if (statistic == null) return;
+			int currentStreak = Integer.parseInt(statistic.getValue());
 
-				String currentStreaksTopString = statisticZocker.get(StatisticType.STREAK_TOP).get().getValue();
-				if (currentStreaksTopString == null) return;
+			statisticZocker.get(StatisticType.STREAK_TOP).thenAccept(currentStreakTop -> {
+				if (currentStreakTop == null || currentStreakTop.getValue() == null) return;
 
-				if (currentStreak > Integer.parseInt(currentStreaksTopString)) {
+				if (currentStreak > Integer.parseInt(currentStreakTop.getValue())) {
 					statisticZocker.set(StatisticType.STREAK_TOP, String.valueOf(currentStreak));
 				}
-			} catch (InterruptedException | ExecutionException e1) {
-				e1.printStackTrace();
-			}
+			});
 
 			statisticZocker.reset(StatisticType.STREAK);
 		});
@@ -131,9 +123,6 @@ public class PlayerVoidFallListener implements Listener {
 			runSynchronous(player, player.getWorld().getSpawnLocation());
 		}
 
-		CompatibleSound.playTeleportSound(player);
-
-		// Killer
 		Player playerKiller = player.getKiller();
 		if (playerKiller == null) return;
 		if (player == playerKiller) return;
@@ -194,5 +183,7 @@ public class PlayerVoidFallListener implements Listener {
 				player.teleport(location);
 			}
 		}.runTask(Main.getPlugin());
+
+		CompatibleSound.playTeleportSound(player);
 	}
 }

@@ -1,5 +1,6 @@
 package minecraft.statistic.zocker.pro.listener;
 
+import minecraft.core.zocker.pro.compatibility.ServerProject;
 import minecraft.core.zocker.pro.config.Config;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -16,8 +17,10 @@ public class EntityKillListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onEntityKill(EntityDeathEvent e) {
-		if (e.isCancelled()) return;
-		
+		if (ServerProject.isServer(ServerProject.PAPER)) {
+			if (e.isCancelled()) return;
+		}
+
 		Config config = Main.STATISTIC_CONFIG;
 
 		if (config.getBool("statistic.player.kill.hostile.enabled")) {

@@ -127,6 +127,8 @@ public class Main extends CorePlugin {
 
 		if (STATISTIC_CONFIG.getBool("statistic.player.death.exp.enabled") || STATISTIC_CONFIG.getBool("statistic.player.death.money.enabled")) {
 			pluginManager.registerEvents(new PlayerDeathListener(), this);
+		} else if (STATISTIC_CONFIG.getBool("statistic.respawn.instant.enabled")) {
+			pluginManager.registerEvents(new PlayerDeathListener(), this);
 		}
 
 		if (STATISTIC_CONFIG.getBool("statistic.player.kill.exp.enabled") || STATISTIC_CONFIG.getBool("statistic.player.kill.money.enabled")) {

@@ -57,9 +57,7 @@ public class PlayerDeathListener implements Listener {
 		// Killer
 		Player playerKiller = null;
 
-		if (e.getEntity().
-
-			getLastDamageCause() instanceof EntityDamageByEntityEvent) {
+		if (e.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent) {
 			EntityDamageByEntityEvent edbe = (EntityDamageByEntityEvent) e.getEntity().getLastDamageCause();
 			if (edbe.getDamager().hasMetadata("player")) {
 				Entity entity = edbe.getDamager();
@@ -118,11 +116,13 @@ public class PlayerDeathListener implements Listener {
 	}
 
 	private void respawn(Player player) {
-		new BukkitRunnable() {
-			@Override
-			public void run() {
-				player.spigot().respawn();
-			}
-		}.runTask(Main.getPlugin());
+		if (Main.STATISTIC_CONFIG.getBool("statistic.respawn.instant.enabled")) {
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					player.spigot().respawn();
+				}
+			}.runTaskLater(Main.getPlugin(), 5L);
+		}
 	}
 }

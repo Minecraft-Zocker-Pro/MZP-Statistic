@@ -151,7 +151,7 @@ public class Main extends CorePlugin {
 		// Global or Per Server
 		STATISTIC_CONFIG.set("statistic.global", true, "0.0.1");
 
-		STATISTIC_CONFIG.setVersion("0.0.1", true);
+		STATISTIC_CONFIG.set("statistic.respawn.instant.enabled", true, "0.0.12");
 
 		// Void
 		STATISTIC_CONFIG.set("statistic.void.reset.inventory", true, "0.0.1");
@@ -378,7 +378,7 @@ public class Main extends CorePlugin {
 		STATISTIC_CONFIG.set("statistic.player.kill.friendly.money.actionbar.enabled", false, "0.0.1");
 		// endregion
 
-		STATISTIC_CONFIG.setVersion("0.0.5", true);
+		STATISTIC_CONFIG.setVersion("0.0.12", true);
 
 
 		// Menu Statistic Overview

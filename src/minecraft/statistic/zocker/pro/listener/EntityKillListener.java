@@ -1,8 +1,8 @@
 package minecraft.statistic.zocker.pro.listener;
 
 import minecraft.core.zocker.pro.compatibility.ServerProject;
+import minecraft.core.zocker.pro.compatibility.ServerVersion;
 import minecraft.core.zocker.pro.config.Config;
-import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -17,17 +17,17 @@ public class EntityKillListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onEntityKill(EntityDeathEvent e) {
-		if (ServerProject.isServer(ServerProject.PAPER)) {
+		if (ServerProject.isServer(ServerProject.PAPER) && ServerVersion.isServerVersionAtLeast(ServerVersion.V1_9)) {
 			if (e.isCancelled()) return;
 		}
 
 		Config config = Main.STATISTIC_CONFIG;
 
-		if (config.getBool("statistic.player.kill.hostile.enabled")) {
+		if (config.getBool("statistic.player.kill.hostile.exp.enabled") || config.getBool("statistic.player.kill.hostile.money.enabled")) {
 			List<String> hostilesWhitelist = config.getStringList("statistic.player.kill.hostile.whitelist");
+
 			for (String name : hostilesWhitelist) {
-				if (EntityType.fromName(name) == null) continue;
-				if (e.getEntity().getType() == EntityType.valueOf(name)) {
+				if (e.getEntity().getType().toString().equalsIgnoreCase(name)) {
 					if (e.getEntity().getKiller() == null) continue;
 
 					StatisticZocker statisticZocker = new StatisticZocker(e.getEntity().getKiller().getUniqueId());
@@ -49,16 +49,13 @@ public class EntityKillListener implements Listener {
 							"statistic.player.kill.hostile.money");
 					}
 				}
-
-				return;
 			}
 		}
 
-		if (config.getBool("statistic.player.kill.friendly.enabled")) {
+		if (config.getBool("statistic.player.kill.friendly.exp.enabled") || config.getBool("statistic.player.kill.friendly.money.enabled")) {
 			List<String> hostilesWhitelist = config.getStringList("statistic.player.kill.friendly.whitelist");
 			for (String name : hostilesWhitelist) {
-				if (EntityType.fromName(name) == null) continue;
-				if (e.getEntity().getType() == EntityType.valueOf(name)) {
+				if (e.getEntity().getType().toString().equalsIgnoreCase(name)) {
 					if (e.getEntity().getKiller() == null) continue;
 
 					StatisticZocker statisticZocker = new StatisticZocker(e.getEntity().getKiller().getUniqueId());
@@ -80,11 +77,7 @@ public class EntityKillListener implements Listener {
 							"statistic.player.kill.friendly.money");
 					}
 				}
-
-				return;
 			}
 		}
-
 	}
-
 }

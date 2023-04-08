@@ -82,7 +82,6 @@ public class StatisticZocker extends Zocker {
 		}.runTaskAsynchronously(Main.getPlugin());
 	}
 
-
 	public void addXp(StatisticType type, double min, double max, String configPath) {
 		this.addXp(type.toString(), min, max, configPath);
 	}
@@ -149,7 +148,7 @@ public class StatisticZocker extends Zocker {
 
 				int value = Integer.parseInt(statistic.getValue());
 
-				this.set(finalType, String.valueOf((value + amount)));
+				this.set(finalType, String.valueOf(value + amount));
 				Bukkit.getPluginManager().callEvent(new StatisticAddEvent(getPlayer(), finalType, true));
 
 				String valueTopString = this.get(finalType + "_TOTAL").get().getValue();
@@ -158,7 +157,43 @@ public class StatisticZocker extends Zocker {
 
 				int valueTop = Integer.parseInt(valueTopString);
 
-				this.set(finalType + "_TOTAL", String.valueOf((valueTop + amount)));
+				this.set(finalType + "_TOTAL", String.valueOf(valueTop + amount));
+				Bukkit.getPluginManager().callEvent(new StatisticAddEvent(getPlayer(), finalType + "_TOTAL", true));
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			}
+		});
+	}
+
+	public void add(String type, double amount) {
+		if (amount == 0) return;
+
+		type = type.toUpperCase();
+		String finalType = type;
+
+		this.get(type).thenAcceptAsync(statistic -> {
+			try {
+				if (statistic == null) {
+					insert(finalType, String.format("%.2f", amount));
+					Bukkit.getPluginManager().callEvent(new StatisticAddEvent(getPlayer(), finalType, true));
+
+					insert(finalType + "_TOTAL", String.format("%.2f", amount));
+					Bukkit.getPluginManager().callEvent(new StatisticAddEvent(getPlayer(), finalType + "_TOTAL", true));
+					return;
+				}
+
+				double value = Double.parseDouble(statistic.getValue());
+
+				this.set(finalType, String.format("%.2f", value + amount));
+				Bukkit.getPluginManager().callEvent(new StatisticAddEvent(getPlayer(), finalType, true));
+
+				String valueTopString = this.get(finalType + "_TOTAL").get().getValue();
+
+				if (valueTopString == null) return;
+
+				double valueTop = Double.parseDouble(valueTopString);
+
+				this.set(finalType + "_TOTAL", String.format("%.2f", valueTop + amount));
 				Bukkit.getPluginManager().callEvent(new StatisticAddEvent(getPlayer(), finalType + "_TOTAL", true));
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
@@ -186,6 +221,31 @@ public class StatisticZocker extends Zocker {
 			if (value >= amount) {
 				Bukkit.getPluginManager().callEvent(new StatisticRemoveEvent(getPlayer(), finalType, true));
 				return this.set(finalType, String.valueOf((value - amount)));
+			} else {
+				Bukkit.getPluginManager().callEvent(new StatisticRemoveEvent(getPlayer(), finalType, true));
+				return this.set(finalType, "0");
+			}
+		});
+
+		return null;
+	}
+
+	public void remove(StatisticType type, double amount) {
+		this.remove(type.toString(), amount);
+	}
+
+	public CompletableFuture<Boolean> remove(String type, double amount) {
+		if (amount == 0) return null;
+
+		type = type.toUpperCase();
+		String finalType = type;
+
+		this.get(type).thenApplyAsync(statistic -> {
+			if (statistic == null) return null;
+			double value = Double.parseDouble(statistic.getValue());
+			if (value >= amount) {
+				Bukkit.getPluginManager().callEvent(new StatisticRemoveEvent(getPlayer(), finalType, true));
+				return this.set(finalType, String.format("%.2f", (value - amount)));
 			} else {
 				Bukkit.getPluginManager().callEvent(new StatisticRemoveEvent(getPlayer(), finalType, true));
 				return this.set(finalType, "0");

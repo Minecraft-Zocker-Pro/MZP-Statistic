@@ -98,7 +98,10 @@ public class PlayerVoidFallListener implements Listener {
 			int currentStreak = Integer.parseInt(statistic.getValue());
 
 			statisticZocker.get(StatisticType.STREAK_TOP).thenAccept(currentStreakTop -> {
-				if (currentStreakTop == null || currentStreakTop.getValue() == null) return;
+				if (currentStreakTop == null) {
+					statisticZocker.set(StatisticType.STREAK_TOP, String.valueOf(currentStreak));
+					return;
+				}
 
 				if (currentStreak > Integer.parseInt(currentStreakTop.getValue())) {
 					statisticZocker.set(StatisticType.STREAK_TOP, String.valueOf(currentStreak));

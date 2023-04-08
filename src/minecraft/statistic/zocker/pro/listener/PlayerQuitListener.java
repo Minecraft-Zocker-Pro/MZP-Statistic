@@ -23,7 +23,10 @@ public class PlayerQuitListener implements Listener {
 				int currentStreak = Integer.parseInt(statistic.getValue());
 
 				String currentStreaksTopString = statisticZocker.get(StatisticType.STREAK_TOP).get().getValue();
-				if (currentStreaksTopString == null) return;
+				if (currentStreaksTopString == null) {
+					statisticZocker.set(StatisticType.STREAK_TOP, String.valueOf(currentStreak));
+					return;
+				}
 
 				if (currentStreak > Integer.parseInt(currentStreaksTopString)) {
 					statisticZocker.set(StatisticType.STREAK_TOP, String.valueOf(currentStreak));

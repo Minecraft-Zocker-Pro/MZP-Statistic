@@ -3,6 +3,7 @@ package minecraft.statistic.zocker.pro.listener;
 import minecraft.core.zocker.pro.compatibility.CompatibleMaterial;
 import minecraft.core.zocker.pro.compatibility.ServerVersion;
 import minecraft.core.zocker.pro.config.Config;
+import minecraft.statistic.zocker.pro.Statistic;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.entity.Entity;
@@ -46,12 +47,18 @@ public class PlayerDeathListener implements Listener {
 			statisticZocker.add(StatisticType.DEATH, 1);
 			statisticZocker.reset(StatisticType.STREAK);
 
-			statisticZocker.get(StatisticType.STREAK_TOP).thenAccept(streaksTop -> {
-				if (streaksTop == null || streaksTop.getValue() == null) return;
-				if (currentStreak > Integer.parseInt(streaksTop.getValue())) {
+			try {
+				Statistic streakTopStatistic = statisticZocker.get(StatisticType.STREAK_TOP).get();
+				if (streakTopStatistic != null) {
+					if (currentStreak > Integer.parseInt(streakTopStatistic.getValue())) {
+						statisticZocker.set(StatisticType.STREAK_TOP, String.valueOf(currentStreak));
+					}
+				} else {
 					statisticZocker.set(StatisticType.STREAK_TOP, String.valueOf(currentStreak));
 				}
-			});
+			} catch (InterruptedException | ExecutionException interruptedException) {
+				interruptedException.printStackTrace();
+			}
 		});
 
 		// Killer

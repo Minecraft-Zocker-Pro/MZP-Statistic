@@ -13,7 +13,7 @@ import java.util.List;
 public class LeaderboardCommand extends Command {
 
 	public LeaderboardCommand() {
-		super("leaderboard", "mzp.statistic.command.leaderboard", new String[]{"leaderboards"});
+		super("leaderboard", "mzp.statistic.command.leaderboard", new String[]{"leaderboards", "leaderboard"});
 	}
 
 	@Override

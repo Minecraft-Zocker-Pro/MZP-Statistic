@@ -85,7 +85,7 @@ public class LeaderboardTopInventory extends InventoryZocker {
 				Main.STATISTIC_DATABASE_TABLE,
 				"statistic_value",
 				"player_uuid",
-				"statistic_type",
+				"statistic_value",
 				"DESC",
 				"statistic_type",
 				this.type.toString(),

@@ -99,7 +99,6 @@ public class LeaderboardTopInventory extends InventoryZocker {
 				OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(offlineZockerUUID));
 				if (offlinePlayer == null) return;
 
-
 				itemSection.getKeys(false).forEach(itemKey -> {
 					ConfigurationSection itemKeySection = itemSection.getConfigurationSection(itemKey);
 					if (itemKeySection == null) return;
@@ -138,7 +137,7 @@ public class LeaderboardTopInventory extends InventoryZocker {
 						}
 
 						this.addItem(new InventoryEntryBuilder()
-							.setItem(new ItemBuilder(CompatibleMaterial.getMaterial(itemKeySection.getString("material.type")).getMaterial())
+							.setItem(new ItemBuilder(CompatibleMaterial.getMaterial(itemKeySection.getString("material.type")).getItem())
 								.setDisplayName(display)
 								.setLore(loresPlaceholder)
 								.setAmount(amount)
@@ -149,7 +148,7 @@ public class LeaderboardTopInventory extends InventoryZocker {
 							.build());
 					} else {
 						this.addItem(new InventoryEntryBuilder()
-							.setItem(new ItemBuilder(CompatibleMaterial.getMaterial(itemKeySection.getString("material.type")).getMaterial())
+							.setItem(new ItemBuilder(CompatibleMaterial.getMaterial(itemKeySection.getString("material.type")).getItem())
 								.setDisplayName(display)
 								.setAmount(1)
 								.setOwningPlayer(offlinePlayer)

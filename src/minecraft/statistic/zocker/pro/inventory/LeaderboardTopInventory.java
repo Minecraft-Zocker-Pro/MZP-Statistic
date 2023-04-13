@@ -10,6 +10,7 @@ import minecraft.core.zocker.pro.inventory.builder.InventoryEntryBuilder;
 import minecraft.core.zocker.pro.inventory.util.ItemBuilder;
 import minecraft.statistic.zocker.pro.*;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -111,6 +112,8 @@ public class LeaderboardTopInventory extends InventoryZocker {
 					}
 
 					String display = PlaceholderAPI.setPlaceholders(zocker.getPlayer(), Objects.requireNonNull(itemKeySection.getString("display")));
+					display = ChatColor.translateAlternateColorCodes('&', display);
+					
 					display = display.replace("%placement%", String.valueOf(count));
 					display = display.replace("%placement_name%", offlineZocker.getName());
 					display = display.replace("%placement_value%", String.valueOf(integer));
@@ -132,6 +135,8 @@ public class LeaderboardTopInventory extends InventoryZocker {
 							lore = lore.replace("%placement_value%", String.valueOf(integer));
 							lore = lore.replace("%leaderboard_type%", typeName);
 							lore = lore.replace("%leaderboard_types%", typeNamePlural);
+							
+							lore = ChatColor.translateAlternateColorCodes('&', lore);
 
 							loresPlaceholder.add(PlaceholderAPI.setPlaceholders(zocker.getPlayer(), lore));
 						}

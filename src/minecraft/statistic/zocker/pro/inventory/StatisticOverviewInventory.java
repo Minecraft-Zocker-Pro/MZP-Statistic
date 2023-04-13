@@ -7,6 +7,7 @@ import minecraft.core.zocker.pro.config.Config;
 import minecraft.core.zocker.pro.inventory.InventoryZocker;
 import minecraft.core.zocker.pro.inventory.builder.InventoryEntryBuilder;
 import minecraft.core.zocker.pro.inventory.util.ItemBuilder;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -63,6 +64,8 @@ public class StatisticOverviewInventory extends InventoryZocker {
 			if (itemKeySection == null) return;
 
 			String display = PlaceholderAPI.setPlaceholders(zocker.getPlayer(), Objects.requireNonNull(itemKeySection.getString("display")));
+			display = ChatColor.translateAlternateColorCodes('&', display);
+			
 			List<String> lores = itemKeySection.getStringList("lore");
 			int amount = itemKeySection.getInt("material.amount");
 			if (amount == 0) {
@@ -73,6 +76,7 @@ public class StatisticOverviewInventory extends InventoryZocker {
 				List<String> loresPlaceholder = new ArrayList<>();
 				for (String lore : lores) {
 					if (lore == null) continue;
+					lore = ChatColor.translateAlternateColorCodes('&', lore);
 					loresPlaceholder.add(PlaceholderAPI.setPlaceholders(zocker.getPlayer(), lore));
 				}
 
